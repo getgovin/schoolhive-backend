@@ -7,7 +7,6 @@ const sectionCreate = async (req, res) => {
       sectionName: req.body.sectionName,
     });
 
-    console.log(exist , "exist")
 
     if (exist.length > 0) {
       return res.status(409).json({
@@ -37,14 +36,14 @@ const sectionList  = async  (req,res) => {
       const filter = {} 
       if(search && search.trim()){
         filter.className({
-         $regex:search,
-         $optional:"i"
+        $regex: search,
+        $options: "i",
         })
        }
        const skip = (pageCount - 1) * pageSize;
        const total = await SectionCreation.countDocuments(filter)
        const repsonse = await SectionCreation.find(filter).limit(pageSize)
-       return res.status(200).json({status:true , message:"Section fetcheed successfully" , data:response , total:total})
+       return res.status(200).json({status:true , message:"Section fetcheed successfully" , data:repsonse , total:total})
     } catch (error) {
         return res.status(500).json({status:false, message :"Internal server error" , error : error.message})
     }
@@ -59,7 +58,12 @@ const sectionUpdate =  async (req,res) => {
       sectionName: req.body.sectionName,
       id:{$ne : id}
       })
-
+  if (exist.length > 0) {
+      return res.status(409).json({
+        status: false,
+        message: "Section already exists in this class",
+      });
+    }
       const findSection   = await SectionCreation.findByIdAndUpdate(id, req.body, {
         new:true,
         validator:true
@@ -90,8 +94,8 @@ const sectionDelete  = async (req,res) =>{
 
 const sectionView = async (req,res) => {
     try { 
-        const {id} = req.paramss;
-        const findSection  = await SectionCreation.find(id);
+        const {id} = req.params;
+        const findSection  = await SectionCreation.findById(id);
          if(!findSection){
         return res.status(404).json({status:false, messsage :"Section not found"})
       }
