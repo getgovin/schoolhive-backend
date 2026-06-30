@@ -4,7 +4,7 @@ const feeCollectionSchema = new mongoose.Schema(
   {
     // School
     schoolId: {
-      type:String,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "SchoolCreate",
       required: true,
       index: true,
@@ -12,20 +12,20 @@ const feeCollectionSchema = new mongoose.Schema(
 
     // Student
     studentId: {
-      type:String,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "StudentCreate",
       required: true,
       index: true,
     },
 
     classId: {
-      type:String,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "ClassCreation",
       required: true,
     },
 
     sectionId: {
-      type:String,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "SectionCreation",
     },
 
@@ -42,7 +42,10 @@ const feeCollectionSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
-
+receiptPdf: {
+  type: String,
+  default: "",
+},
     // Fee Details
 
     oldFees :{
@@ -125,6 +128,7 @@ const feeCollectionSchema = new mongoose.Schema(
       default: "Paid",
     },
   },
+  
   {
     timestamps: true,
   }

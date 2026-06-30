@@ -4,6 +4,10 @@ const studentSchema = new mongoose.Schema({
   photo: {
     type: String,
   },
+  fee:{
+        type: String,
+
+  } ,
   studentInfo: {
     firstName: {
       type: String,

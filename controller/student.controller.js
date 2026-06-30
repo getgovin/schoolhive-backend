@@ -1,3 +1,4 @@
+import { FeesCreation } from "../models/fees.model.js";
 import { StudentCreation } from "../models/student.model.js";
 
 const studentCreate = async (req,res) =>{
@@ -28,10 +29,23 @@ const studentCreate = async (req,res) =>{
             : "Roll number already exists in this class and section.",
       });
     }
-         const data = {
+
+    // Get fee structure
+    const addFee = await FeesCreation.findOne({ classID });
+
+    if (!addFee) {
+      return res.status(404).json({
+        status: false,
+        message: "Fee structure not found for this class.",
+      });
+    }
+
+    const data = {
       ...req.body,
       photo: req.file?.path,
-    };  
+      fee: addFee.fee,
+    };
+    
            const newStudent  =  new StudentCreation(data);
          const response = await newStudent.save();
          res.status(201).json({status:true,message:"Student created successfully!",data:response})
