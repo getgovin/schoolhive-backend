@@ -1,10 +1,11 @@
 import mongoose from "mongoose";
 
 const feesSchema  = new mongoose.Schema({
-    classId:{
-        type:String,
-        required:true
-    },
+  classId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "classes", // Model name
+    required: true,
+  },
     fee:{
         type:Number,
         required:true

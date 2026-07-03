@@ -2,7 +2,7 @@ import {Router} from "express"
 
 import {  schoolLogin } from "../controller/school.auth.js";
 import { verifyToken } from "../utils/jwt.js";
-import { classDelete, classList, classUpdate, create } from "../controller/classes.controller.js";
+import { classDelete, classList, classUpdate, classView, create } from "../controller/classes.controller.js";
 import { sectionCreate, sectionDelete, sectionList, sectionUpdate, sectionView } from "../controller/section.controller.js";
 import { feeeCreate, feeeDelete, feeeUpdate, feeeView, feeList } from "../controller/fee.controller.js";
 const router = Router();
@@ -14,6 +14,7 @@ router.post("/login", schoolLogin);
 router.post("/class/create"  , verifyToken , create )
 router.get("/class/list" , verifyToken , classList)
 router.put("/class/update/:id" , verifyToken , classUpdate)
+router.get("/class/view/:id" , verifyToken , classView)
 router.delete("/class/delete/:id" , verifyToken , classDelete)
 
 // ---------------------- sections Routes start ------------------------

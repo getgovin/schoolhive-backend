@@ -47,7 +47,7 @@ const feeList = async (req, res) => {
       });
     }
     const total = await FeesCreation.countDocuments(filter);
-    const response = await FeesCreation.find(filter);
+    const response = await FeesCreation.find(filter).populate("classId" , "className").skip(skip).limit(pageSize);
     return res.status(200).json({status:true , message :"Fee fetched successfully" ,data:response , total:total})
   } catch (error) {
     res
@@ -108,7 +108,7 @@ const feeeUpdate = async (req, res) => {
 const feeeView = async (req,res) => {
   try {
     const {id } = req.params;
-    const response = await FeesCreation.findById(id)
+    const response = await FeesCreation.findById(id).populate("classId" , "className")
     if(!response){
           return res
       .status(404)

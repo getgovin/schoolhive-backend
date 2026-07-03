@@ -144,7 +144,7 @@ const schoolDelete = async (req , res) =>{
     console.log(error)
     return res
       .status(500)
-      .json({ status: false, message: "Internal server error" });
+      .json({ status: false, message: "Internal server error" ,error:error.message });
   }
 };
 export {schoolCreate , schoolList ,schoolUpdate , schoolView ,schoolDelete ,schoolLogin}

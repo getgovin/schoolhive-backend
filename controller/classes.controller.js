@@ -100,6 +100,31 @@ const classUpdate = async (req, res) => {
   }
 };
 
+const classView = async (req,res) => {
+    try {
+        const {id} = req.params;
+        const findClass = await ClassCreation.findById(id);
+         if (!findClass) {
+      return res
+        .status(404)
+        .json({ status: false, message: "Class not found" });
+    }
+
+    return res
+      .status(200)
+      .json({
+        status: true,
+        message: "Class fetched succssfully",
+        data:findClass
+      });
+
+    } catch (error) {
+         return res
+      .status(500)
+      .json({ status: false, message: "Internal server error" });
+    }
+} 
+
 const classDelete = async (req,res) => {
     try {
         const {id} = req.params;
@@ -123,4 +148,4 @@ const classDelete = async (req,res) => {
       .json({ status: false, message: "Internal server error" });
     }
 }
-export { create, classList , classUpdate , classDelete };
+export { create, classList , classUpdate , classDelete , classView};
