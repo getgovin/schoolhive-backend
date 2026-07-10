@@ -49,6 +49,36 @@ const { search, page = 1, limit = 10 } = req.query;
     }
 }
 
+const sectionFilterList = async (req, res) => {
+  try {
+    const { classId } = req.query;
+
+    const filter = {};
+
+    if (classId?.trim()) {
+      filter.classId = classId;
+    }
+
+    const response = await SectionCreation.find(filter)
+      .populate("classId", "className");
+
+    return res.status(200).json({
+      status: true,
+      message: "Sections fetched successfully",
+      data: response,
+      total: response.length,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
+
+
 
 const sectionUpdate =  async (req,res) => {
     try {
@@ -107,4 +137,4 @@ const sectionView = async (req,res) => {
     }
 }
 
-export {sectionCreate  ,sectionUpdate , sectionList , sectionView , sectionDelete}
+export {sectionCreate  ,sectionUpdate , sectionList , sectionView , sectionDelete , sectionFilterList}

@@ -1,32 +1,82 @@
 import { FeesCreation } from "../models/fees.model.js";
 import { StudentCreation } from "../models/student.model.js";
+import mongoose from "mongoose";
 
 const studentCreate = async (req,res) =>{
     try {
           const {
-      classID,
-      sectionID,
-      admissionNo,
-      rollNo,
-    } = req.body;
+      classId,
+      adminssion_number,
+    } = req.body?.studentInfo;
+  
+    
 
-    // Check duplicate student
+// Check duplicate Admission Number
+const exist = await StudentCreation.findOne({
+  "studentInfo.adminssion_number": adminssion_number,
+});
+    console.log(exist)
+
+if (exist) {
+  return res.status(409).json({
+    status: false,
+    message: "Admission number already exists.",
+  });
+}
+
+    // Get fee structure
+    const addFee = await FeesCreation.findOne({ classId });
+     console.log(addFee , "addFee")
+    if (!addFee) {
+      return res.status(404).json({
+        status: false,
+        message: "Fee structure not found for this class.",
+      });
+    }
+
+    const data = {
+      ...req.body,
+      photo: req.file?.path,
+      fee: Number(addFee.fee) + Number(req.body?.studentInfo?.oldFee) +  Number(req.body?.studentInfo?.busFee),
+      currentFee:Number(addFee.fee)
+    };
+    
+           const newStudent  =  new StudentCreation(data);
+         const response = await newStudent.save();
+         res.status(201).json({status:true,message:"Student created successfully!",data:response})
+
+    } catch (error) {
+        res.status(500).json({status:false,message:"Internal server error" , error:error.message})
+    }
+}
+
+const studentUpdate = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const { classID, adminssion_number, oldFee = 0, busFee = 0 } =
+      req.body.studentInfo;
+
+    // Check if student exists
+    const student = await StudentCreation.findById(id);
+
+    if (!student) {
+      return res.status(404).json({
+        status: false,
+        message: "Student not found.",
+      });
+    }
+
+    // Check duplicate Admission Number (exclude current student)
     const exist = await StudentCreation.findOne({
-      classID,
-      sectionID,
-      $or: [
-        { admissionNo },
-        { rollNo },
-      ],
+      "studentInfo.adminssion_number": adminssion_number,
+      _id: { $ne: id },
     });
 
     if (exist) {
       return res.status(409).json({
         status: false,
-        message:
-          exist.admissionNo === admissionNo
-            ? "Admission number already exists in this class and section."
-            : "Roll number already exists in this class and section.",
+        message: "Admission number already exists.",
       });
     }
 
@@ -42,71 +92,42 @@ const studentCreate = async (req,res) =>{
 
     const data = {
       ...req.body,
-      photo: req.file?.path,
-      fee: addFee.fee,
+      photo: req.file ? req.file.path : student.photo,
+      fee:
+        Number(addFee.fee) +
+        Number(oldFee) +
+        Number(busFee),
+      currentFee: Number(addFee.fee),
     };
-    
-           const newStudent  =  new StudentCreation(data);
-         const response = await newStudent.save();
-         res.status(201).json({status:true,message:"Student created successfully!",data:response})
 
-    } catch (error) {
-        res.status(500).json({status:false,message:"Internal server error" , error:error.message})
-    }
-}
-const studentupdate = async (req,res) =>{
-    try {
-        const {id} = req.params;
-          const {
-      classID,
-      sectionID,
-      admissionNo,
-      rollNo,
+    const response = await StudentCreation.findByIdAndUpdate(
+      id,
+      data,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
 
-    } = req.body;
-
-    // Check duplicate student
-    const exist = await StudentCreate.findOne({
-      classID,
-      sectionID,
-      id:{$ne:id},
-      $or: [
-        { admissionNo },
-        { rollNo },
-      ],
+    return res.status(200).json({
+      status: true,
+      message: "Student updated successfully!",
+      data: response,
     });
-
-    if (exist) {
-      return res.status(409).json({
-        status: false,
-        message:
-          exist.admissionNo === admissionNo
-            ? "Admission number already exists in this class and section."
-            : "Roll number already exists in this class and section.",
-      });
-    }
-         const data = {
-      ...req.body,
-      photo: req.file?.path,
-    };  
-    const findStudent = StudentCreation.findByIdAndUpdate(id, data , {new:true , validator:true})
-    if(!findStudent){
-                 res.status(404).json({status:false,message:"Student not find"})
-
-    }
-          
-       return   res.status(201).json({status:true,message:"Student updated successfully!",data:findStudent})
-
-    } catch (error) {
-        res.status(500).json({status:false,message:"Internal server error" , error:error.message})
-    }
-}
+  } catch (error) {
+    return res.status(500).json({
+      status: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
 const studentList = async (req, res) => {
   try {
     const {
       search = "",
-      classid,
-      sectionid,
+      classId,
+      sectionId,
       page = 1,
       limit = 10,
     } = req.query;
@@ -114,26 +135,31 @@ const studentList = async (req, res) => {
     const filter = {};
 
     // Search by name, admission no, roll no
-    if (search) {
-      filter.$or = [
-        { studentName: { $regex: search, $options: "i" } },
-      ];
-    }
+if (search) {
+  filter.$or = [
+    { "studentInfo.firstName": { $regex: search, $options: "i" } },
+    { "studentInfo.lastName": { $regex: search, $options: "i" } },
+    { "studentInfo.adminssion_number": { $regex: search, $options: "i" } },
+    { "studentInfo.roll_number": { $regex: search, $options: "i" } },
+  ];
+}
 
-    // Filter by class
-    if (classid) {
-      filter.classid = classid;
-    }
 
-    // Filter by section
-    if (sectionid) {
-      filter.sectionid = sectionid;
-    }
+// Filter by class
+if (classId) {
+  filter["studentInfo.classId"] = new mongoose.Types.ObjectId(classId);
+}
+
+// Filter by section
+if (sectionId) {
+  filter["studentInfo.sectionId"] = new mongoose.Types.ObjectId(sectionId);
+}
 
     const skip = (Number(page) - 1) * Number(limit);
-
+    console.log(filter , "filter")
     const [students, total] = await Promise.all([
-      StudentCreation.find(filter)
+      StudentCreation.find(filter).populate("studentInfo.classId", "className")
+  .populate("studentInfo.sectionId", "sectionName")
         .skip(skip)
         .limit(Number(limit)),
       StudentCreation.countDocuments(filter),
@@ -157,9 +183,10 @@ const studentView = async (req, res) => {
   try {
     const {
      id
-    } = req.query;
+    } = req.params;
 
-    const findStudent = await StudentCreation.findById(id)
+    const findStudent = await StudentCreation.findById(id).populate("studentInfo.classId", "className")
+  .populate("studentInfo.sectionId", "sectionName")
     if(!findStudent){
         res.status(200).json({
       status: true,
@@ -169,7 +196,7 @@ const studentView = async (req, res) => {
     return res.status(200).json({
       status: true,
       message: "Student fetched successfully.",
-      data: students,
+      data: findStudent,
     });
   } catch (error) {
     return res.status(500).json({
@@ -183,11 +210,11 @@ const studentdeleted = async (req, res) => {
   try {
     const {
      id
-    } = req.query;
+    } = req.params;
 
     const findStudent = await StudentCreation.findByIdAndDelete(id)
     if(!findStudent){
-        res.status(200).json({
+        res.status(404).json({
       status: true,
       message: "Student not found.",
     });
@@ -204,6 +231,54 @@ const studentdeleted = async (req, res) => {
     });
   }
 };
+const studentFilterList = async (req, res) => {
+  try {
+    const {
+      search = "",
+      classId,
+      sectionId,
+   
+    } = req.query;
+
+    const filter = {};
+
+    // Search by name, admission no, roll no
+if (search) {
+  filter.$or = [
+    { "studentInfo.firstName": { $regex: search, $options: "i" } },
+    { "studentInfo.lastName": { $regex: search, $options: "i" } },
+    { "studentInfo.adminssion_number": { $regex: search, $options: "i" } },
+    { "studentInfo.roll_number": { $regex: search, $options: "i" } },
+  ];
+}
 
 
-export {studentCreate, studentList, studentupdate , studentView , studentdeleted }
+// Filter by class
+if (classId) {
+  filter["studentInfo.classId"] = new mongoose.Types.ObjectId(classId);
+}
+
+// Filter by section
+if (sectionId) {
+  filter["studentInfo.sectionId"] = new mongoose.Types.ObjectId(sectionId);
+}
+
+    const students = await StudentCreation.find(filter).populate("studentInfo.classId", "className")
+  .populate("studentInfo.sectionId", "sectionName")
+          ;
+
+    return res.status(200).json({
+      status: true,
+      message: "Student list fetched successfully.",
+      data: students,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
+export {studentCreate, studentList, studentUpdate , studentView , studentdeleted,studentFilterList }

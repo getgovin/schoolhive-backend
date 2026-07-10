@@ -60,6 +60,21 @@ const classList = async (req, res) => {
   }
 };
 
+const classFilterList = async (req, res) => {
+  try {
+    const response = await ClassCreation.find()
+    return res.status(201).json({
+      status: true,
+      message: "Class Fetched successfully",
+      data: response,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ status: false, message: "Internal server error" });
+  }
+};
+
 const classUpdate = async (req, res) => {
   try {
     const { id } = req.params;
@@ -148,4 +163,4 @@ const classDelete = async (req,res) => {
       .json({ status: false, message: "Internal server error" });
     }
 }
-export { create, classList , classUpdate , classDelete , classView};
+export { create, classList , classUpdate , classDelete , classView ,classFilterList};

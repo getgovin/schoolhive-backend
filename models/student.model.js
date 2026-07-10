@@ -4,10 +4,12 @@ const studentSchema = new mongoose.Schema({
   photo: {
     type: String,
   },
-  fee:{
-        type: String,
-
-  } ,
+  fee: {
+    type: String,
+  },
+  currentFee: {
+    type: String,
+  },
   studentInfo: {
     firstName: {
       type: String,
@@ -46,12 +48,21 @@ const studentSchema = new mongoose.Schema({
       required: true,
     },
     classId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "classes",
       required: true,
     },
+
     sectionId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Sections",
       required: true,
+    },
+    oldFee: {
+      type: String,
+    },
+    busFee: {
+      type: String,
     },
   },
   parentsDetails: {
@@ -67,10 +78,7 @@ const studentSchema = new mongoose.Schema({
       type: String,
       required: true,
     },
-    father_occasion: {
-      type: String,
-      required: true,
-    },
+
     mother_name: {
       type: String,
       required: true,
@@ -78,10 +86,6 @@ const studentSchema = new mongoose.Schema({
 
     mother_number: {
       type: String,
-    },
-    mother_occasion: {
-      type: String,
-      required: true,
     },
   },
   addressInfo: {
@@ -113,20 +117,16 @@ const studentSchema = new mongoose.Schema({
   emergency_info: {
     contact_person: {
       type: String,
-      required: true,
     },
     relationshp: {
       type: String,
-      required: true,
     },
     mobile_number: {
       type: String,
-      required: true,
     },
   },
 });
 
+const StudentCreation = mongoose.model("Students", studentSchema);
 
-const StudentCreation  =  mongoose.model("Students" , studentSchema)
-
-export {StudentCreation}
+export { StudentCreation };
