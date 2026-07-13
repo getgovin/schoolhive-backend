@@ -9,7 +9,7 @@ const db = mongoose.connection;
  })
 
   db.on('error' , () =>{
-    console.log(`Mongo DB connection error ${error}`)
+    console.log(`Mongo DB connection error `)
  })
 
   db.on('disconnected' , () =>{
