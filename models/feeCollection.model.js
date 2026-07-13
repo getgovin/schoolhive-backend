@@ -2,33 +2,23 @@ import mongoose from "mongoose";
 
 const feeCollectionSchema = new mongoose.Schema(
   {
-    // School
-    schoolId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "SchoolCreate",
-      required: true,
-      index: true,
-    },
-
     // Student
     studentId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "StudentCreate",
+      ref: "Students",
       required: true,
-      index: true,
     },
 
     classId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "ClassCreation",
+      ref: "classes",
       required: true,
     },
 
     sectionId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "SectionCreation",
+      ref: "Sections",
     },
-
 
     // Receipt
     receiptNo: {
@@ -42,16 +32,18 @@ const feeCollectionSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
-receiptPdf: {
-  type: String,
-  default: "",
-},
+
+    receiptPdf: {
+      type: String,
+      default: "",
+    },
     // Fee Details
 
-    oldFees :{
-    type: Number,
+    oldFee: {
+      type: Number,
       default: 0,
     },
+
     tuitionFee: {
       type: Number,
       default: 0,
@@ -91,12 +83,7 @@ receiptPdf: {
     // Payment
     paymentMode: {
       type: String,
-      enum: [
-        "Cash",
-        "UPI",
-        "Cheque",
-        "Bank Transfer",
-      ],
+      enum: ["Cash", "UPI", "Cheque", "Bank Transfer"],
       required: true,
     },
 
@@ -121,17 +108,11 @@ receiptPdf: {
       trim: true,
       default: "",
     },
-
-    status: {
-      type: String,
-      enum: ["Paid", "Cancelled"],
-      default: "Paid",
-    },
   },
-  
+
   {
     timestamps: true,
-  }
+  },
 );
 
 export default mongoose.model("FeeCollection", feeCollectionSchema);

@@ -46,9 +46,9 @@ const generateReceipt = async (fee) => {
 
     doc.moveDown(0.5);
 
-    fee.feeDetails.forEach((item) => {
-      doc.text(`${item.feeName} : ₹${item.amount}`);
-    });
+    // fee.feeDetails.forEach((item) => {
+    //   doc.text(`${item.feeName} : ₹${item.amount}`);
+    // });
 
     doc.moveDown();
 

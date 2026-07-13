@@ -9,6 +9,7 @@ import { studentCreate, studentdeleted, studentFilterList, studentList, studentU
 import uploadFile from "../config/multer.config.js";
 import { uploadExcel } from "../middleware/excelUpload.js";
 import { importStudents } from "../controller/studentImport.controller.js";
+import { downloadReceipt, feeCollectionByStudent, feeCollectionList, feeSubmit } from "../controller/feesCollection.controller.js";
 const router = Router();
 // ---------------------- School Routes start ------------------------
 
@@ -52,6 +53,11 @@ router.delete("/student/delete/:id" , verifyToken , studentdeleted);
 router.post("/student/import", uploadExcel.single("file"), verifyToken , importStudents);
 
 
+// ---------------------- Fee submission Routes start ------------------------
+router.post("/student/feeSubmission" , verifyToken , feeSubmit);
+router.get("/fees/download/:id"  , verifyToken , downloadReceipt);
+router.get("/fee-collection/student/:studentId", verifyToken, feeCollectionByStudent);
+router.get("/fee-collection/list", verifyToken, feeCollectionList);
 
 
 

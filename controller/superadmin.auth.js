@@ -24,10 +24,9 @@ import { generateToken } from "../utils/jwt.js";
         return res.status(200).json({status:true , message:" Login Successfully" , user:superadminuser , token:token})
     }
   } catch (error) {
-    console.log(error)
     return res
       .status(500)
-      .json({ status: false, message: "Internal server error" });
+      .json({ status: false, message: "Internal server error" , error:error.message });
   }
 };
 

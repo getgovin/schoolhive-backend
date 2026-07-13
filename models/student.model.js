@@ -7,6 +7,9 @@ const studentSchema = new mongoose.Schema({
   fee: {
     type: String,
   },
+  remaingBusFee :{
+    type:String
+  } ,
   currentFee: {
     type: String,
   },

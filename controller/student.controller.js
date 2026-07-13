@@ -15,7 +15,6 @@ const studentCreate = async (req,res) =>{
 const exist = await StudentCreation.findOne({
   "studentInfo.adminssion_number": adminssion_number,
 });
-    console.log(exist)
 
 if (exist) {
   return res.status(409).json({
@@ -26,7 +25,6 @@ if (exist) {
 
     // Get fee structure
     const addFee = await FeesCreation.findOne({ classId });
-     console.log(addFee , "addFee")
     if (!addFee) {
       return res.status(404).json({
         status: false,
@@ -38,7 +36,8 @@ if (exist) {
       ...req.body,
       photo: req.file?.path,
       fee: Number(addFee.fee) + Number(req.body?.studentInfo?.oldFee) +  Number(req.body?.studentInfo?.busFee),
-      currentFee:Number(addFee.fee)
+      currentFee:Number(addFee.fee),
+      remaingBusFee:Number(req.body?.studentInfo?.busFee)
     };
     
            const newStudent  =  new StudentCreation(data);
@@ -156,7 +155,6 @@ if (sectionId) {
 }
 
     const skip = (Number(page) - 1) * Number(limit);
-    console.log(filter , "filter")
     const [students, total] = await Promise.all([
       StudentCreation.find(filter).populate("studentInfo.classId", "className")
   .populate("studentInfo.sectionId", "sectionName")
