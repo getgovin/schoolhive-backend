@@ -1,4 +1,5 @@
 import { FeesCreation } from "../models/fees.model.js";
+import { StudentCreation } from "../models/student.model.js";
 
 const feeeCreate = async (req, res) => {
   try {
@@ -129,29 +130,48 @@ const feeeView = async (req,res) => {
   }
 }
 
-const feeeDelete = async (req,res) => {
+
+const feeeDelete = async (req, res) => {
   try {
-    const {id } = req.params;
-    const response = await FeesCreation.findByIdAndDelete(id)
-    if(!response){
-          return res
-      .status(404)
-      .json({
+    const { id } = req.params;
+
+    // Check if fee exists
+    const fee = await FeesCreation.findById(id);
+
+    if (!fee) {
+      return res.status(404).json({
         status: false,
         message: "Fees entry not found",
       });
     }
-    return res.status(200).json({status:true, message :"fee deleted successfully"})
-  } catch (error) {
-    res
-      .status(500)
-      .json({
+
+    // Check if any students are using this fee
+    const studentCount = await StudentCreation.countDocuments({
+      feeId: id,
+    });
+
+    if (studentCount > 0) {
+      return res.status(400).json({
         status: false,
-        message: "Internal server error",
-        error: error.message,
+        message: `This fee structure is assigned to ${studentCount} student(s). Please assign another fee structure before deleting it.`,
       });
+    }
+
+    // Delete fee
+    await FeesCreation.findByIdAndDelete(id);
+
+    return res.status(200).json({
+      status: true,
+      message: "Fee deleted successfully.",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: false,
+      message: "Internal server error",
+      error: error.message,
+    });
   }
-}
+};
 
 
 

@@ -37,7 +37,8 @@ if (exist) {
       photo: req.file?.path,
       fee: Number(addFee.fee) + Number(req.body?.studentInfo?.oldFee) +  Number(req.body?.studentInfo?.busFee),
       currentFee:Number(addFee.fee),
-      remaingBusFee:Number(req.body?.studentInfo?.busFee)
+      remaingBusFee:Number(req.body?.studentInfo?.busFee),
+      feeId:addFee?._id
     };
     
            const newStudent  =  new StudentCreation(data);
@@ -48,7 +49,6 @@ if (exist) {
         res.status(500).json({status:false,message:"Internal server error" , error:error.message})
     }
 }
-
 const studentUpdate = async (req, res) => {
   try {
     const { id } = req.params;

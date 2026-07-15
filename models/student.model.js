@@ -7,6 +7,10 @@ const studentSchema = new mongoose.Schema({
   fee: {
     type: String,
   },
+      feeId:{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "fees",
+    },
   remaingBusFee :{
     type:String
   } ,
@@ -44,7 +48,6 @@ const studentSchema = new mongoose.Schema({
     },
     roll_number: {
       type: String,
-      required: true,
     },
     joining_date: {
       type: Date,
@@ -55,7 +58,6 @@ const studentSchema = new mongoose.Schema({
       ref: "classes",
       required: true,
     },
-
     sectionId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Sections",
@@ -79,7 +81,6 @@ const studentSchema = new mongoose.Schema({
     },
     father_whatsaappNumbr: {
       type: String,
-      required: true,
     },
 
     mother_name: {

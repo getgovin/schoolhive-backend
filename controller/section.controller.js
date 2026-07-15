@@ -1,4 +1,5 @@
 import { SectionCreation } from "../models/section.model.js";
+import { StudentCreation } from "../models/student.model.js";
 
 const sectionCreate = async (req, res) => {
   try {
@@ -108,19 +109,47 @@ const sectionUpdate =  async (req,res) => {
     }
 } 
 
-const sectionDelete  = async (req,res) =>{
-    try {
-          const {id} = req.params;
-          const findSection = await SectionCreation.findByIdAndDelete(id);
-          if(!findSection){
-        return res.status(404).json({status:false, messsage :"Section not found"})
-      }
-      return res.status(200).json({status:true , message:"Section deleted successfullly" })
-    } catch (error) {
-        return res.status(500).json({status:false , message:"Internal server error" , error :error.message})
+const sectionDelete = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Check if section exists
+    const findSection = await SectionCreation.findById(id);
+
+    if (!findSection) {
+      return res.status(404).json({
+        status: false,
+        message: "Section not found",
+      });
     }
 
-}
+    // Check if any students belong to this section
+    const studentCount = await StudentCreation.countDocuments({
+      "studentInfo.sectionId": id,
+    });
+
+    if (studentCount > 0) {
+      return res.status(400).json({
+        status: false,
+        message: `This section contains ${studentCount} students. Please transfer all students to another section before deleting it.`,
+      });
+    }
+
+    // Delete section
+    await SectionCreation.findByIdAndDelete(id);
+
+    return res.status(200).json({
+      status: true,
+      message: "Section deleted successfully.",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
 
 const sectionView = async (req,res) => {
     try { 

@@ -1,4 +1,5 @@
 import { ClassCreation } from "../models/class.model.js";
+import { StudentCreation } from "../models/student.model.js";
 
 const create = async (req, res) => {
   try {
@@ -140,27 +141,45 @@ const classView = async (req,res) => {
     }
 } 
 
-const classDelete = async (req,res) => {
-    try {
-        const {id} = req.params;
-        const findClass = await ClassCreation.findByIdAndDelete(id);
-         if (!findClass) {
-      return res
-        .status(404)
-        .json({ status: false, message: "Class not found" });
-    }
+const classDelete = async (req, res) => {
+  try {
+    const { id } = req.params;
 
-    return res
-      .status(200)
-      .json({
-        status: true,
-        message: "Class deleted succssfully",
+    // Check if class exists
+    const findClass = await ClassCreation.findById(id);
+
+    if (!findClass) {
+      return res.status(404).json({
+        status: false,
+        message: "Class not found",
       });
-
-    } catch (error) {
-         return res
-      .status(500)
-      .json({ status: false, message: "Internal server error" });
     }
-}
+
+    // Check if students are assigned to this class
+    const studentCount = await StudentCreation.countDocuments({
+      "studentInfo.classId": id,
+    });
+
+    if (studentCount > 0) {
+      return res.status(400).json({
+        status: false,
+        message: `This class contains ${studentCount} student(s). Please transfer all students to another class before deleting it.`,
+      });
+    }
+
+    // Delete class
+    await ClassCreation.findByIdAndDelete(id);
+
+    return res.status(200).json({
+      status: true,
+      message: "Class deleted successfully.",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
 export { create, classList , classUpdate , classDelete , classView ,classFilterList};
