@@ -238,6 +238,16 @@ const studentFilterList = async (req, res) => {
    
     } = req.query;
 
+
+       // Require at least one filter
+    if (!classId && !sectionId) {
+      return res.status(200).json({
+        status: false,
+        message: "Please select a class or section first.",
+        data: [],
+      });
+    }
+
     const filter = {};
 
     // Search by name, admission no, roll no

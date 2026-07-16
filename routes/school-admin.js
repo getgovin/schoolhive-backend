@@ -10,6 +10,7 @@ import uploadFile from "../config/multer.config.js";
 import { uploadExcel } from "../middleware/excelUpload.js";
 import { importStudents } from "../controller/studentImport.controller.js";
 import { downloadReceipt, feeCollectionByStudent, feeCollectionList, feeSubmit } from "../controller/feesCollection.controller.js";
+import { promoteStudents } from "../controller/promote.contoller.js";
 const router = Router();
 // ---------------------- School Routes start ------------------------
 
@@ -59,6 +60,8 @@ router.get("/fees/download/:id"  , verifyToken , downloadReceipt);
 router.get("/fee-collection/student/:studentId", verifyToken, feeCollectionByStudent);
 router.get("/fee-collection/list", verifyToken, feeCollectionList);
 
+// ---------------------- Promote Students Routes start ------------------------
+router.post("/student/promote" , verifyToken , promoteStudents);
 
 
 

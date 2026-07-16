@@ -101,7 +101,22 @@ const feeCollectionByStudent = async (req, res) => {
 const feeSubmit = async (req, res) => {
   try {
     // extract information from body
-    const { studentId, totalAmount, busFee, oldFee, currentsubmit } = req.body;
+    const { studentId, totalAmount, busFee, oldFee ,tuitionFee,otherCharge ,fine,discount} = req.body;
+
+    const requiredAmount =
+  Number(tuitionFee) +
+  Number(busFee) +
+  Number(oldFee) +
+  Number(otherCharge) +
+  Number(fine) +
+  Number(discount);
+
+if (Number(totalAmount) < requiredAmount) {
+  return res.status(400).json({
+    status: false,
+    message: `Total amount cannot be less than ₹${requiredAmount}.`,
+  });
+}
 
     /// check student is present or not 
     const student = await StudentCreation.findById(studentId);
@@ -112,14 +127,14 @@ const feeSubmit = async (req, res) => {
       });
     }
 
-    // Validate School Fee
-    if (Number(totalAmount) > Number(student.fee)) {
-      return res.status(400).json({
-        status: false,
-        message:
-          "Paid school fee cannot be greater than the remaining school fee.",
-      });
-    }
+    // // Validate School Fee
+    // if (Number(totalAmount) > Number(student.fee)) {
+    //   return res.status(400).json({
+    //     status: false,
+    //     message:
+    //       "Paid school fee cannot be greater than the remaining school fee.",
+    //   });
+    // }
 
     // Validate Bus Fee
     if (Number(busFee || 0) > Number(student.remaingBusFee || 0)) {
@@ -145,22 +160,28 @@ const feeSubmit = async (req, res) => {
     const response = await newFeeSubmission.save();
 
      // generate PDF path  
-    const pdfPath = await generateReceipt({
-      receiptNo: response.receiptNo,
-      studentName: response.studentName,
-      className: response.className,
-      sectionName: response.sectionName,
-      feeDetails: response.feeDetails,
-      discount: response.discount,
-      paidAmount: response.paidAmount,
-      paymentMode: response.paymentMode,
-      receivedBy: response.receivedBy,
-    });
-    response.receiptPdf = pdfPath;
+    // const pdfPath = await generateReceipt({
+    //   receiptNo: response.receiptNo,
+    //   studentName: response.studentName,
+    //   className: response.className,
+    //   sectionName: response.sectionName,
+    //   feeDetails: response.feeDetails,
+    //   discount: response.discount,
+    //   paidAmount: response.paidAmount,
+    //   paymentMode: response.paymentMode,
+    //   receivedBy: response.receivedBy,
+    // });
+    // response.receiptPdf = pdfPath;
     // save repsonse on db 
     await response.save();
 // update student 
-const schoolFee = Number(totalAmount);
+// const schoolFee = Number(totalAmount) - Number(tuitionFee) - Number(otherCharge) - Number(fine) + Number(discount);
+const schoolFee =
+  Number(totalAmount) -
+  Number(tuitionFee) -
+  Number(otherCharge) -
+  Number(fine) +
+  Number(discount);
 const busFeeAmount = Number(busFee || 0);
 const oldFeeAmount = Number(oldFee || 0);
 
