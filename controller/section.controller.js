@@ -31,8 +31,8 @@ const sectionCreate = async (req, res) => {
 
 const sectionList  = async  (req,res) => {
     try {
-const { search, page = 1, limit = 10 } = req.query;
-       const pageSize = Number(limit);
+const { search, page = 1, pageSize = 10 } = req.query;
+       const pageLimit = Number(pageSize);
        const pageCount = Number(page);
       const filter = {} 
     if (search?.trim()) {
@@ -41,9 +41,9 @@ const { search, page = 1, limit = 10 } = req.query;
     $options: "i",
   };
 }
-       const skip = (pageCount - 1) * pageSize;
+       const skip = (pageCount - 1) * pageLimit;
        const total = await SectionCreation.countDocuments(filter)
-       const repsonse = await SectionCreation.find(filter).populate("classId" , "className").skip(skip).limit(pageSize)
+       const repsonse = await SectionCreation.find(filter).populate("classId" , "className").skip(skip).limit(pageLimit)
        return res.status(200).json({status:true , message:"Section fetcheed successfully" , data:repsonse , total:total})
     } catch (error) {
         return res.status(500).json({status:false, message :"Internal server error" , error : error.message})

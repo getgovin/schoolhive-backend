@@ -56,7 +56,7 @@ router.post("/student/import", uploadExcel.single("file"), verifyToken , importS
 
 // ---------------------- Fee submission Routes start ------------------------
 router.post("/student/feeSubmission" , verifyToken , feeSubmit);
-router.get("/fees/download/:id"  , verifyToken , downloadReceipt);
+router.get("/fee/download/:id"  , downloadReceipt);
 router.get("/fee-collection/student/:studentId", verifyToken, feeCollectionByStudent);
 router.get("/fee-collection/list", verifyToken, feeCollectionList);
 

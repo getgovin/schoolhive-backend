@@ -128,7 +128,7 @@ const studentList = async (req, res) => {
       classId,
       sectionId,
       page = 1,
-      limit = 10,
+      pageSize = 10,
     } = req.query;
 
     const filter = {};
@@ -154,12 +154,12 @@ if (sectionId) {
   filter["studentInfo.sectionId"] = new mongoose.Types.ObjectId(sectionId);
 }
 
-    const skip = (Number(page) - 1) * Number(limit);
+    const skip = (Number(page) - 1) * Number(pageSize);
     const [students, total] = await Promise.all([
       StudentCreation.find(filter).populate("studentInfo.classId", "className")
   .populate("studentInfo.sectionId", "sectionName")
         .skip(skip)
-        .limit(Number(limit)),
+        .limit(Number(pageSize)),
       StudentCreation.countDocuments(filter),
     ]);
 
