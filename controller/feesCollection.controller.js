@@ -167,20 +167,35 @@ if (Number(totalAmount) < requiredAmount) {
     const response = await newFeeSubmission.save();
 
      // generate PDF path  
-   const pdfPath = await generateReceipt({
+const pdfPath = await generateReceipt({
+
   receiptNo: response.receiptNo,
-  studentName: `${student?.studentInfo.firstName} ${student?.studentInfo.middleName || ""} ${student?.studentInfo.lastName}`.trim(),
-  className: student?.studentInfo.classId?.className,
-  sectionName: student?.studentInfo.sectionId?.section,
-  discount,
-  paidAmount: totalAmount,
-  fine,
-  otherCharge,
-  paymentMode: response.paymentMode,
-  receivedBy: response.receivedBy,
+
+  studentName: `${student.studentInfo.firstName}
+${student.studentInfo.middleName || ""}
+${student.studentInfo.lastName}`.trim(),
+
+  fatherName: student.parentsDetails.fatherName,
+
+  className: student.studentInfo.classId.className,
+
+  sectionName: student.studentInfo.sectionId.section,
+
+  tuitionFee,
   busFee,
   oldFee,
-  tuitionFee,
+  otherCharge,
+  fine,
+  discount,
+
+  paidAmount: totalAmount,
+
+  paymentMode: response.paymentMode,
+
+  receivedBy: response.receivedBy,
+
+  paidBy: response.paidBy || student.studentInfo.fatherName
+
 });
     response.receiptPdf = pdfPath;
     // save repsonse on db 
