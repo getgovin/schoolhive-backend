@@ -59,12 +59,19 @@ const generateReceipt = async (fee) => {
       value
     );
   });
+console.log("Chrome Path:", puppeteer.executablePath());
 
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
-  });
-
+const browser = await puppeteer.launch({
+  executablePath: puppeteer.executablePath(),
+  headless: true,
+  args: [
+    "--no-sandbox",
+    "--disable-setuid-sandbox",
+    "--disable-dev-shm-usage",
+    "--single-process",
+    "--no-zygote",
+  ],
+});
   const page = await browser.newPage();
 
   await page.setContent(html, {
