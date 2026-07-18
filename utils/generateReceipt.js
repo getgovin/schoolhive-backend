@@ -127,7 +127,10 @@ doc
 
 doc
   .font("Helvetica")
-  .text(fee.studentName || "-", 150, startY + 11);
+  .text(fee.studentName || "-", 150, startY + 11, {
+    width: 130,
+    lineBreak: false
+  });
 
 doc
   .font("Helvetica-Bold")
@@ -175,24 +178,9 @@ doc
     startY + studentRowHeight * 2 + 11
   );
 
-// ===================== Row 4 =====================
-doc
-  .font("Helvetica-Bold")
-  .text("Admission No.", 50, startY + studentRowHeight * 3 + 11);
 
-doc
-  .font("Helvetica")
-  .text(fee.admissionNo || "-", 150, startY + studentRowHeight * 3 + 11);
 
-doc
-  .font("Helvetica-Bold")
-  .text("Roll No.", 315, startY + studentRowHeight * 3 + 11);
-
-doc
-  .font("Helvetica")
-  .text(fee.rollNo || "-", 430, startY + studentRowHeight * 3 + 11);
-
-startY += studentRowHeight * 4 + 20;
+startY += studentRowHeight * 3 + 20;
 
         // ======================================
 // FEE DETAILS
