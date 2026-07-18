@@ -113,7 +113,7 @@ for (let i = 1; i < 3; i++) {
 // Vertical Line (Center)
 doc
   .moveTo(300, startY)
-  .lineTo(300, startY + studentRowHeight * 4)
+  .lineTo(300, startY + studentRowHeight * 3)
   .stroke();
 
 doc
@@ -357,11 +357,17 @@ startY += paymentRowHeight * 2 + 20;
 doc
   .fillColor("#4B5563")
   .font("Helvetica")
-  .fontSize(10)
+  .fontSize(9)
   .text(
     "Thank you for your payment. Please keep this receipt for future reference. This is a computer-generated receipt and does not require a physical signature.",
-    20,
+    40,
     startY,
+    {
+      width: pageWidth,
+      align: "left",
+      lineGap: 2,
+    }
+  );
  
 
  doc
