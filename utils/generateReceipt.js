@@ -93,17 +93,17 @@ doc
 
 startY += 45;
 
-const studentRowHeight = 34;
+const studentRowHeight = 26;
 
 // Outer Border
 doc
   .lineWidth(1)
   .strokeColor("#D1D5DB")
-  .rect(40, startY, pageWidth, studentRowHeight * 4)
+  .rect(40, startY, pageWidth, studentRowHeight * 3)
   .stroke();
 
 // Horizontal Lines
-for (let i = 1; i < 4; i++) {
+for (let i = 1; i < 3; i++) {
   doc
     .moveTo(40, startY + studentRowHeight * i)
     .lineTo(40 + pageWidth, startY + studentRowHeight * i)
@@ -124,21 +124,28 @@ doc
 doc
   .font("Helvetica-Bold")
   .text("Student Name", 50, startY + 11);
-
 doc
   .font("Helvetica")
-  .text(fee.studentName || "-", 150, startY + 11, {
-    width: 130,
-    lineBreak: false
+  .fontSize(9)
+  .text(fee.studentName || "-", 145, startY + 8, {
+    width: 145,
+    height: 12,
+    lineBreak: false,
+    ellipsis: true
   });
-
 doc
   .font("Helvetica-Bold")
   .text("Father Name", 315, startY + 11);
 
 doc
   .font("Helvetica")
-  .text(fee.fatherName || "-", 430, startY + 11);
+  .fontSize(9)
+  .text(fee.fatherName || "-", 425, startY + 8, {
+    width: 150,
+    height: 12,
+    lineBreak: false,
+    ellipsis: true
+  });
 
 // ===================== Row 2 =====================
 doc
@@ -186,7 +193,6 @@ startY += studentRowHeight * 3 + 20;
 // FEE DETAILS
 // ======================================
 
-startY += 155;
 
 doc
   .roundedRect(40, startY, pageWidth, 30, 5)
@@ -207,7 +213,7 @@ const col1 = 35;   // #
 const col2 = 250;  // Description (smaller)
 const col3 = 215;  // Amount (wider)
 
-const rowHeight = 28;
+const rowHeight = 22;
 
 
 doc
@@ -291,7 +297,7 @@ doc.text(
 
 // ================= PAYMENT DETAILS =================
 startY += 45;
-const paymentRowHeight = 28;
+const paymentRowHeight = 24;
 
 // Outer Border
 doc
@@ -345,7 +351,6 @@ doc
   );
 
 startY += paymentRowHeight * 2 + 20;
-startY += 100;
 
 
 
@@ -357,11 +362,6 @@ doc
     "Thank you for your payment. Please keep this receipt for future reference. This is a computer-generated receipt and does not require a physical signature.",
     20,
     startY,
-    {
-      width: 300,
-      lineGap: 3,
-    }
-  );
  
 
  doc
