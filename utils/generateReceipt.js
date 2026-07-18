@@ -80,6 +80,7 @@ doc
 
 let startY = 160;
 
+// Header
 doc
   .roundedRect(40, startY, pageWidth, 30, 5)
   .fill(light);
@@ -92,70 +93,106 @@ doc
 
 startY += 45;
 
+const studentRowHeight = 34;
+
 // Outer Border
 doc
   .lineWidth(1)
   .strokeColor("#D1D5DB")
-  .roundedRect(40, startY, pageWidth, 135, 6)
+  .rect(40, startY, pageWidth, studentRowHeight * 4)
   .stroke();
-// Row 1
+
+// Horizontal Lines
+for (let i = 1; i < 4; i++) {
+  doc
+    .moveTo(40, startY + studentRowHeight * i)
+    .lineTo(40 + pageWidth, startY + studentRowHeight * i)
+    .stroke();
+}
+
+// Vertical Line (Center)
 doc
-  .fillColor(black)
+  .moveTo(300, startY)
+  .lineTo(300, startY + studentRowHeight * 4)
+  .stroke();
+
+doc
+  .fillColor("#111827")
+  .fontSize(10);
+
+// ===================== Row 1 =====================
+doc
   .font("Helvetica-Bold")
-  .fontSize(11)
-  .text("Student Name", 50, startY + 12);
+  .text("Student Name", 50, startY + 11);
 
 doc
   .font("Helvetica")
-  .text(fee.studentName || "-", 170, startY + 12);
+  .text(fee.studentName || "-", 150, startY + 11);
 
 doc
   .font("Helvetica-Bold")
-  .text("Father Name", 350, startY + 12);
+  .text("Father Name", 315, startY + 11);
 
 doc
   .font("Helvetica")
-  .text(fee.fatherName || "-", 450, startY + 12);
+  .text(fee.fatherName || "-", 430, startY + 11);
 
-// Row 2
-
+// ===================== Row 2 =====================
 doc
   .font("Helvetica-Bold")
-  .text("Class", 50, startY + 45);
+  .text("Class", 50, startY + studentRowHeight + 11);
 
 doc
   .font("Helvetica")
-  .text(fee.className || "-", 170, startY + 45);
+  .text(fee.className || "-", 150, startY + studentRowHeight + 11);
 
 doc
   .font("Helvetica-Bold")
-  .text("Section", 350, startY + 45);
-
-// -------- Row 3 --------
-
-doc
-  .font("Helvetica-Bold")
-  .fontSize(16)
-  .text("Receipt No.", 55, startY + 95);
+  .text("Section", 315, startY + studentRowHeight + 11);
 
 doc
   .font("Helvetica")
-  .fontSize(14)
-  .text(fee.receiptNo || "-", 190, startY + 97);
+  .text(fee.section || "-", 430, startY + studentRowHeight + 11);
 
+// ===================== Row 3 =====================
 doc
   .font("Helvetica-Bold")
-  .fontSize(16)
-  .text("Date", 360, startY + 95);
+  .text("Receipt No.", 50, startY + studentRowHeight * 2 + 11);
 
 doc
   .font("Helvetica")
-  .fontSize(14)
+  .text(fee.receiptNo || "-", 150, startY + studentRowHeight * 2 + 11);
+
+doc
+  .font("Helvetica-Bold")
+  .text("Date", 315, startY + studentRowHeight * 2 + 11);
+
+doc
+  .font("Helvetica")
   .text(
     new Date(fee.paymentDate || Date.now()).toLocaleDateString("en-IN"),
-    490,
-    startY + 97
+    430,
+    startY + studentRowHeight * 2 + 11
   );
+
+// ===================== Row 4 =====================
+doc
+  .font("Helvetica-Bold")
+  .text("Admission No.", 50, startY + studentRowHeight * 3 + 11);
+
+doc
+  .font("Helvetica")
+  .text(fee.admissionNo || "-", 150, startY + studentRowHeight * 3 + 11);
+
+doc
+  .font("Helvetica-Bold")
+  .text("Roll No.", 315, startY + studentRowHeight * 3 + 11);
+
+doc
+  .font("Helvetica")
+  .text(fee.rollNo || "-", 430, startY + studentRowHeight * 3 + 11);
+
+startY += studentRowHeight * 4 + 20;
 
         // ======================================
 // FEE DETAILS
@@ -327,14 +364,14 @@ startY += 100;
 doc
   .fillColor("#4B5563")
   .font("Helvetica")
-  .fontSize(12)
+  .fontSize(10)
   .text(
     "Thank you for your payment. Please keep this receipt for future reference. This is a computer-generated receipt and does not require a physical signature.",
-    70,
+    20,
     startY,
     {
-      width: 340,
-      lineGap: 2,
+      width: 300,
+      lineGap: 3,
     }
   );
  
