@@ -206,7 +206,7 @@ doc.text("Amount", tableX + col1 + col2, startY + 9, {
 });
 
 startY += rowHeight;
-
+const feeRows = [ { title: "Tuition Fee", amount: fee.tuitionFee, }, { title: "Bus Fee", amount: fee.busFee, }, { title: "Old Fee", amount: fee.oldFee, }, { title: "Other Charges", amount: fee.otherCharge, }, { title: "Fine", amount: fee.fine, }, { title: "Discount", amount: fee.discount, }, ];
 feeRows.forEach((item, index) => {
 
   doc
