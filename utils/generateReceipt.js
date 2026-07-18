@@ -265,7 +265,7 @@ doc.text(
 // ======================================
 
 // ================= PAYMENT DETAILS =================
-
+startY += 45;
 const paymentRowHeight = 28;
 
 // Outer Border
@@ -327,10 +327,10 @@ startY += 100;
 doc
   .fillColor("#4B5563")
   .font("Helvetica")
-  .fontSize(9)
+  .fontSize(12)
   .text(
     "Thank you for your payment. Please keep this receipt for future reference. This is a computer-generated receipt and does not require a physical signature.",
-    40,
+    70,
     startY,
     {
       width: 340,
