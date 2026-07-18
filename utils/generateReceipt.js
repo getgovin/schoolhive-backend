@@ -36,50 +36,44 @@ const generateReceipt = async (fee) => {
       // ===========================
       // HEADER
       // ===========================
+// ================= HEADER =================
+doc
+  .roundedRect(40, 40, pageWidth, 90, 8)
+  .fill(primary);
 
-      doc.roundedRect(40, 40, pageWidth, 90, 8)
-        .fill(primary);
+// ===== Left Logo =====
+doc
+  .circle(75, 85, 25)
+  .fill("white");
 
-      // SH LOGO
-      doc
-        .circle(75, 85, 25)
-        .fill("white");
+doc
+  .fillColor(primary)
+  .font("Helvetica-Bold")
+  .fontSize(20)
+  .text("SH", 63, 77);
 
-      doc
-        .fillColor(primary)
-        .fontSize(20)
-        .font("Helvetica-Bold")
-        .text("SH", 63, 77);
+// ===== Center School Details =====
+doc.fillColor("white");
 
-      doc.fillColor("white");
+// School Name
+doc
+  .font("Helvetica-Bold")
+  .fontSize(22)
+  .text("Sunrise Public School", 0, 58, {
+    width: doc.page.width,
+    align: "center",
+  });
 
-      doc
-        .fontSize(22)
-        .text("SchoolHive", 110, 60);
+// School Location
+doc
+  .font("Helvetica")
+  .fontSize(11)
+  .text("Indore, Madhya Pradesh", 0, 88, {
+    width: doc.page.width,
+    align: "center",
+  });
 
-      doc
-        .fontSize(11)
-        .font("Helvetica")
-        .text("School Management System", 110, 88);
 
-      doc
-        .text("Indore, Madhya Pradesh", 110, 103);
-
-      doc
-        .fontSize(18)
-        .font("Helvetica-Bold")
-        .text("FEE RECEIPT", 390, 60);
-
-      doc
-        .fontSize(11)
-        .font("Helvetica")
-        .text(`Receipt No : ${fee.receiptNo}`, 390, 90);
-
-      doc.text(
-        `Date : ${new Date().toLocaleDateString("en-IN")}`,
-        390,
-        108
-      );
       // ======================================
 // STUDENT DETAILS
 // ======================================
@@ -102,9 +96,8 @@ startY += 45;
 doc
   .lineWidth(1)
   .strokeColor("#D1D5DB")
-  .rect(40, startY, pageWidth, 90)
+  .roundedRect(40, startY, pageWidth, 135, 6)
   .stroke();
-
 // Row 1
 doc
   .fillColor(black)
@@ -138,15 +131,37 @@ doc
   .font("Helvetica-Bold")
   .text("Section", 350, startY + 45);
 
+// -------- Row 3 --------
+
+doc
+  .font("Helvetica-Bold")
+  .fontSize(16)
+  .text("Receipt No.", 55, startY + 95);
+
 doc
   .font("Helvetica")
-  .text(fee.sectionName || "-", 450, startY + 45);
+  .fontSize(14)
+  .text(fee.receiptNo || "-", 190, startY + 97);
+
+doc
+  .font("Helvetica-Bold")
+  .fontSize(16)
+  .text("Date", 360, startY + 95);
+
+doc
+  .font("Helvetica")
+  .fontSize(14)
+  .text(
+    new Date(fee.paymentDate || Date.now()).toLocaleDateString("en-IN"),
+    490,
+    startY + 97
+  );
 
         // ======================================
 // FEE DETAILS
 // ======================================
 
-startY += 120;
+startY += 155;
 
 doc
   .roundedRect(40, startY, pageWidth, 30, 5)
@@ -162,141 +177,71 @@ startY += 45;
 
 // Table Layout
 const tableX = 40;
-const col1 = 40;
-const col2 = 350;
-const col3 = 150;
+
+const col1 = 35;   // #
+const col2 = 250;  // Description (smaller)
+const col3 = 215;  // Amount (wider)
+
+const rowHeight = 28;
 
 const rowHeight = 32;
 
-// Header
 doc
+  .lineWidth(1)
+  .strokeColor("#D1D5DB")
   .rect(tableX, startY, pageWidth, rowHeight)
-  .fill(primary);
+  .stroke();
 
-doc.fillColor("white");
+doc
+  .fillColor("#111827")
+  .font("Helvetica-Bold")
+  .fontSize(10);
 
-doc.text("#", tableX + 15, startY + 10);
+doc.text("#", tableX + 12, startY + 9);
 
-doc.text("Description", tableX + col1, startY + 10);
+doc.text("Description", tableX + col1, startY + 9);
 
-doc.text("Amount", tableX + col1 + col2, startY + 10, {
-  width: col3 - 20,
+doc.text("Amount", tableX + col1 + col2, startY + 9, {
+  width: col3 - 15,
   align: "right",
 });
 
 startY += rowHeight;
 
-const feeRows = [
-  {
-    title: "Tuition Fee",
-    amount: fee.tuitionFee,
-  },
-  {
-    title: "Bus Fee",
-    amount: fee.busFee,
-  },
-  {
-    title: "Old Fee",
-    amount: fee.oldFee,
-  },
-  {
-    title: "Other Charges",
-    amount: fee.otherCharge,
-  },
-  {
-    title: "Fine",
-    amount: fee.fine,
-  },
-  {
-    title: "Discount",
-    amount: fee.discount,
-  },
-];
-
 feeRows.forEach((item, index) => {
 
-  if (index % 2 === 0) {
-
-    doc
-      .rect(tableX, startY, pageWidth, rowHeight)
-      .fill("#FAFAFA");
-
-  }
-
   doc
-    .strokeColor("#E5E7EB")
+    .lineWidth(1)
+    .strokeColor("#D1D5DB")
     .rect(tableX, startY, pageWidth, rowHeight)
     .stroke();
 
   doc
     .fillColor("#111827")
     .font("Helvetica")
-    .fontSize(11);
+    .fontSize(10);
 
-  doc.text(index + 1, tableX + 15, startY + 10);
+  doc.text(index + 1, tableX + 12, startY + 9);
 
-  doc.text(item.title, tableX + col1, startY + 10);
+  doc.text(item.title, tableX + col1, startY + 9);
 
   doc.text(
-    `₹ ${Number(item.amount || 0).toLocaleString("en-IN")}`,
+    Number(item.amount || 0).toLocaleString("en-IN"),
     tableX + col1 + col2,
-    startY + 10,
+    startY + 9,
     {
-      width: col3 - 20,
+      width: col3 - 15,
       align: "right",
     }
   );
 
   startY += rowHeight;
-
 });
 
-      doc
-  .rect(tableX, startY, pageWidth, 38)
-  .fill(primary);
-
-doc
-  .fillColor("white")
-  .font("Helvetica-Bold")
-  .fontSize(13);
-
-doc.text(
-  "TOTAL PAID",
-  tableX + col1,
-  startY + 12
-);
-
-doc.text(
-  `₹ ${Number(fee.paidAmount).toLocaleString("en-IN")}`,
-  tableX + col1 + col2,
-  startY + 12,
-  {
-    width: col3 - 20,
-    align: "right",
-  }
-);
-
-startY += 55;
-
-      // ======================================
-// PAYMENT DETAILS
-// ======================================
-
-doc
-  .roundedRect(40, startY, pageWidth, 30, 5)
-  .fill(light);
-
-doc
-  .fillColor(primary)
-  .font("Helvetica-Bold")
-  .fontSize(14)
-  .text("Payment Details", 50, startY + 8);
-
-startY += 45;
-
-      doc
-  .strokeColor("#D1D5DB")
-  .rect(40, startY, pageWidth, 70)
+ doc
+  .lineWidth(1)
+  .strokeColor("#111827")
+  .rect(tableX, startY, pageWidth, rowHeight)
   .stroke();
 
 doc
@@ -304,88 +249,108 @@ doc
   .font("Helvetica-Bold")
   .fontSize(11);
 
-doc.text("Payment Mode", 50, startY + 12);
+doc.text("TOTAL PAID", tableX + col1, startY + 9);
 
+doc.text(
+  Number(fee.paidAmount || 0).toLocaleString("en-IN"),
+  tableX + col1 + col2,
+  startY + 9,
+  {
+    width: col3 - 15,
+    align: "right",
+  }
+);
+
+      // ======================================
+// PAYMENT DETAILS
+// ======================================
+
+// ================= PAYMENT DETAILS =================
+
+const paymentRowHeight = 28;
+
+// Outer Border
 doc
-  .font("Helvetica")
-  .text(fee.paymentMode || "-", 170, startY + 12);
-
-doc
-  .font("Helvetica-Bold")
-  .text("Received By", 330, startY + 12);
-
-doc
-  .font("Helvetica")
-  .text(fee.receivedBy || "-", 450, startY + 12);
-
-// Second Row
-
-doc
-  .font("Helvetica-Bold")
-  .text("Paid By", 50, startY + 42);
-
-doc
-  .font("Helvetica")
-  .text(fee.paidBy || fee.fatherName || "-", 170, startY + 42);
-
-startY += 100;
-
-      doc
-  .moveTo(40, startY)
-  .lineTo(555, startY)
-  .strokeColor("#E5E7EB")
+  .lineWidth(1)
+  .strokeColor("#D1D5DB")
+  .rect(40, startY, pageWidth, paymentRowHeight * 2)
   .stroke();
 
-startY += 20;
+// Horizontal Line
+doc
+  .moveTo(40, startY + paymentRowHeight)
+  .lineTo(40 + pageWidth, startY + paymentRowHeight)
+  .stroke();
 
-      doc
-  .fillColor(primary)
+// Vertical Line
+doc
+  .moveTo(300, startY)
+  .lineTo(300, startY + paymentRowHeight * 2)
+  .stroke();
+
+doc
+  .fillColor("#111827")
   .font("Helvetica-Bold")
-  .fontSize(16)
-  .text("Thank You!", 40, startY);
+  .fontSize(10);
 
-startY += 28;
+doc.text("Payment Mode", 50, startY + 9);
+
+doc
+  .font("Helvetica")
+  .text(fee.paymentMode || "-", 150, startY + 9);
+
+doc
+  .font("Helvetica-Bold")
+  .text("Received By", 315, startY + 9);
+
+doc
+  .font("Helvetica")
+  .text(fee.receivedBy || "-", 430, startY + 9);
+
+// Second Row
+doc
+  .font("Helvetica-Bold")
+  .text("Paid By", 50, startY + paymentRowHeight + 9);
+
+doc
+  .font("Helvetica")
+  .text(
+    fee.paidBy || fee.fatherName || "-",
+    150,
+    startY + paymentRowHeight + 9
+  );
+
+startY += paymentRowHeight * 2 + 20;
+startY += 100;
+
+
 
 doc
   .fillColor("#4B5563")
   .font("Helvetica")
-  .fontSize(10)
+  .fontSize(9)
   .text(
     "Thank you for your payment. Please keep this receipt for future reference. This is a computer-generated receipt and does not require a physical signature.",
     40,
     startY,
     {
-      width: 350,
-      lineGap: 4,
+      width: 340,
+      lineGap: 2,
     }
   );
+ 
 
-      doc
-  .strokeColor("#9CA3AF")
-  .moveTo(410, startY + 30)
-  .lineTo(540, startY + 30)
-  .stroke();
-
-doc
-  .fillColor("#111827")
-  .font("Helvetica")
-  .fontSize(10)
-  .text(
-    "Authorized Signature",
-    425,
-    startY + 40
-  );
-
-      doc
-  .fontSize(9)
+ doc
   .fillColor("#9CA3AF")
+  .font("Helvetica")
+  .fontSize(8)
   .text(
     "Generated by SchoolHive School Management System",
     40,
-    780,
+    785,
     {
-      align: "center",
       width: pageWidth,
+      align: "center",
     }
   );
       doc.end();
