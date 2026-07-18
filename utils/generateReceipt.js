@@ -184,7 +184,6 @@ const col3 = 215;  // Amount (wider)
 
 const rowHeight = 28;
 
-const rowHeight = 32;
 
 doc
   .lineWidth(1)
